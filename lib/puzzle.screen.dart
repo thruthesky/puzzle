@@ -8,8 +8,7 @@ class PuzzleScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<String> images = ref.watch(puzzleImagesProvider);
-    print(images);
+    print('rebuild');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Puzzle'),
@@ -18,12 +17,16 @@ class PuzzleScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
+            Text('Moves: ${ref.watch(moveCounter)}'),
             Expanded(
               child: PuzzleBoard(
                 crossAxisCount: ref.watch(gridSize),
-                images: images,
+                images: ref.watch(puzzleImagesProvider),
               ),
             ),
+            ElevatedButton(
+                onPressed: () => ref.read(moveCounter.notifier).increment(),
+                child: const Text('+ move')),
             ElevatedButton(
               onPressed: () {
                 ref.read(puzzleImagesProvider.notifier).shuffle();

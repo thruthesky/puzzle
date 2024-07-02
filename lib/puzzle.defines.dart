@@ -1,4 +1,4 @@
-const List<String> bird = [
+final List<String> bird = [
   'assets/bird/3x3/image001.jpg',
   'assets/bird/3x3/image002.jpg',
   'assets/bird/3x3/image003.jpg',
