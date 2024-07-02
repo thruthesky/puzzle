@@ -1,4 +1,4 @@
-final List<String> bird = [
+const List<String> bird = [
   'assets/bird/3x3/image001.jpg',
   'assets/bird/3x3/image002.jpg',
   'assets/bird/3x3/image003.jpg',
@@ -10,7 +10,7 @@ final List<String> bird = [
   "0",
 ];
 
-final List<String> whale = [
+const List<String> whale = [
   'assets/whale/4x4/image001.png',
   'assets/whale/4x4/image002.png',
   'assets/whale/4x4/image003.png',

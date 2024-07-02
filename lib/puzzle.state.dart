@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game/puzzle.defines.dart';
 
@@ -19,17 +21,30 @@ class PuzzleImages extends Notifier<List<String>> {
   @override
   List<String> build() {
     int size = ref.watch(gridSize);
-    return size == 3 ? bird : whale;
+
+    /// used a spread operator to return the value as a new list
+    /// and the original list are constant
+
+    return [...size == 3 ? bird : whale];
   }
 
   /// Shuffles the images.
   void shuffle() {
-    state.shuffle();
+    /// [shuffle] reorder the items of the list but not changing its state
+    /// to work around this we need to reassign it to our state as a new value
+
+    state.shuffle(); // new list state
+    state = [...state]; // reassign to state
   }
 
   moveGrid(int index) {
     state[state.indexOf("0")] = state[index];
     state[index] = "0";
+    state = [...state]; // reassign to state
+  }
+
+  reset() {
+    state = [...ref.watch(gridSize) == 3 ? bird : whale];
   }
 
   isMovable(int index) {
@@ -89,3 +104,24 @@ final numberedArray = Provider<List<String>>((ref) {
   numbers.add("0");
   return numbers;
 });
+
+class ElapsedTimer extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+
+  int value = 0;
+  late Timer timer;
+
+  reset() {
+    state = 0;
+    timer.cancel();
+  }
+
+  startTime() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) => state++);
+  }
+}
+
+final countTime = NotifierProvider<ElapsedTimer, int>(ElapsedTimer.new);
