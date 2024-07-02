@@ -29,7 +29,7 @@ class PuzzleScreen extends ConsumerWidget {
                 child: const Text('+ move')),
             ElevatedButton(
               onPressed: () {
-                ref.read(puzzleImagesProvider.notifier).shuffle();
+                // ref.read(puzzleImagesProvider.notifier).shuffle();
                 ref.read(isActive.notifier).state = true;
               },
               child: const Text('Play'),

@@ -38,9 +38,7 @@ class PuzzleBoard extends ConsumerWidget {
   }
 
   moveImage(BuildContext context, WidgetRef ref, int index) {
-    if (ref
-        .watch(puzzleImagesProvider.notifier)
-        .isMovable(index, ref.watch(gridSize))) {
+    if (ref.watch(puzzleImagesProvider.notifier).isMovable(index)) {
       /// ref.watch(provider); 와 같이 하면 state 를 참조한다.
       /// ref.watch(provider.notifier) 와 같이 하면 provider 의 클래스 모델을 참조한다.
       /// ref.watch(isActive.notifier).state = true; 같이 하여, .state 를 통해서 state 를 바로 변경 할 수 있다.

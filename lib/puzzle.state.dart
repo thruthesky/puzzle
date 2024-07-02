@@ -14,18 +14,16 @@ final isActive = StateProvider<bool>((ref) => false);
 ///
 /// Notifier 에는 state 의 Generic Type 을 지정한다.
 ///
-class PuzzleImages extends StateNotifier<List<String>> {
+class PuzzleImages extends Notifier<List<String>> {
   /// The default state. The images are the bird images.
-  // @override
-  // List<String> build() {
-  //   int size = ref.watch(gridSize);
-  //   return size == 3 ? bird : whale;
-  // }
-
-  PuzzleImages() : super([...whale]);
+  @override
+  List<String> build() {
+    int size = ref.watch(gridSize);
+    return size == 3 ? bird : whale;
+  }
 
   /// Shuffles the images.
-  shuffle() {
+  void shuffle() {
     state.shuffle();
   }
 
@@ -34,8 +32,10 @@ class PuzzleImages extends StateNotifier<List<String>> {
     state[index] = "0";
   }
 
-  isMovable(int index, int boardSize) {
-    return index - 1 >= 0 && state[index - 1] == "0" || // left
+  isMovable(int index) {
+    List<String> images = state;
+    int boardSize = ref.read(gridSize);
+    return index - 1 >= 0 && images[index - 1] == "0" || // left
         index + 1 < state.length && state[index + 1] == "0" || // right
         (index - boardSize >= 0 && state[index - boardSize] == "0" || // top
             index + boardSize < state.length &&
@@ -44,7 +44,7 @@ class PuzzleImages extends StateNotifier<List<String>> {
 }
 
 final puzzleImagesProvider =
-    StateNotifierProvider<PuzzleImages, List<String>>((ref) => PuzzleImages());
+    NotifierProvider<PuzzleImages, List<String>>(() => PuzzleImages());
 
 /// [MoveCounter] is a counter that counts the number of moves the user has made.
 class MoveCounter extends Notifier<int> {
