@@ -49,6 +49,7 @@ class PuzzleScreen extends ConsumerWidget {
               onPressed: () {
                 ref.read(gridSize.notifier).state =
                     ref.read(gridSize) == 3 ? 4 : 3;
+                ref.read(isNumbered.notifier).state = false;
                 ref.read(isActive.notifier).state = false;
               },
               child:
@@ -59,6 +60,7 @@ class PuzzleScreen extends ConsumerWidget {
                 ref.read(gridSize.notifier).state =
                     ref.read(gridSize) == 3 ? 4 : 3;
                 ref.read(isActive.notifier).state = false;
+                ref.read(isNumbered.notifier).state = true;
               },
               child: Text(
                   'Change to Numbered ${ref.watch(gridSize) == 3 ? '4x4' : '3x3'}'),
