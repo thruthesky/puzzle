@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game/puzzle.piece.dart';
 import 'package:game/puzzle.state.dart';
 
-class PuzzleBoard extends ConsumerStatefulWidget {
+class PuzzleBoard extends ConsumerWidget {
   const PuzzleBoard({
     super.key,
     required this.crossAxisCount,
@@ -15,24 +15,19 @@ class PuzzleBoard extends ConsumerStatefulWidget {
   final int crossAxisCount;
   final List<String> images;
   @override
-  PuzzleBoardState createState() => PuzzleBoardState();
-}
-
-class PuzzleBoardState extends ConsumerState<PuzzleBoard> {
-  @override
-  Widget build(BuildContext context) {
-    log('${widget.images}');
+  Widget build(BuildContext context, WidgetRef ref) {
+    log('$images');
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: widget.crossAxisCount,
+        crossAxisCount: crossAxisCount,
         mainAxisSpacing: 4,
         crossAxisSpacing: 4,
       ),
-      itemCount: widget.images.length,
+      itemCount: images.length,
       itemBuilder: (context, index) => PuzzlePiece(
         numbered: ref.watch(isNumbered), // state.isNumber,
-        content: widget.images[index],
-        space: widget.images[index] == "0",
+        content: images[index],
+        space: images[index] == "0",
         onTap: ref.watch(isActive)
             ? () {
                 moveImage(context, ref, index);
