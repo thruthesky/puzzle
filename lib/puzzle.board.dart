@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game/puzzle.piece.dart';
@@ -14,10 +12,8 @@ class PuzzleBoard extends ConsumerWidget {
 
   final int crossAxisCount;
   final List<String> images;
-
   @override
-  Widget build(BuildContext context, ref) {
-    log('${images.length}');
+  Widget build(BuildContext context, WidgetRef ref) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
@@ -26,10 +22,10 @@ class PuzzleBoard extends ConsumerWidget {
       ),
       itemCount: images.length,
       itemBuilder: (context, index) => PuzzlePiece(
-        numbered: ref.read(isNumbered), // state.isNumber,
+        numbered: ref.watch(isNumbered), // state.isNumber,
         content: images[index],
         space: images[index] == "0",
-        onTap: ref.read(isActive)
+        onTap: ref.watch(isActive)
             ? () {
                 moveImage(context, ref, index);
               }
@@ -40,9 +36,9 @@ class PuzzleBoard extends ConsumerWidget {
 
   moveImage(BuildContext context, WidgetRef ref, int index) {
     if (ref.read(puzzleImagesProvider.notifier).isMovable(index)) {
-      /// ref.read(provider); 와 같이 하면 state 를 참조한다.
-      /// ref.read(provider.notifier) 와 같이 하면 provider 의 클래스 모델을 참조한다.
-      /// ref.read(isActive.notifier).state = true; 같이 하여, .state 를 통해서 state 를 바로 변경 할 수 있다.
+      /// ref.watch(provider); 와 같이 하면 state 를 참조한다.
+      /// ref.watch(provider.notifier) 와 같이 하면 provider 의 클래스 모델을 참조한다.
+      /// ref.watch(isActive.notifier).state = true; 같이 하여, .state 를 통해서 state 를 바로 변경 할 수 있다.
       ref.read(puzzleImagesProvider.notifier).moveGrid(index);
       checkWin(context, ref);
 
@@ -64,7 +60,7 @@ class PuzzleBoard extends ConsumerWidget {
     bool result = true;
     int index = 1;
 
-    for (String item in ref.read(puzzleImagesProvider)) {
+    for (String item in ref.watch(puzzleImagesProvider)) {
       if (!item.startsWith("0") && index == 16) result = false;
       if (!item.startsWith("0") &&
           index != int.parse(item.split("/").last.substring(5, 8))) {
@@ -74,13 +70,4 @@ class PuzzleBoard extends ConsumerWidget {
     }
     return result;
   }
-
-  // isMovable(index) {
-  //   return index - 1 >= 0 && state.images[index - 1] == "0" || // left
-  //       index + 1 < state.images.length &&
-  //           state.images[index + 1] == "0" || // right
-  //       (index - state.grid >= 0 && state.images[index - state.grid] == "0" ||
-  //           index + state.grid < state.images.length &&
-  //               state.images[index + state.grid] == "0");
-  // }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game/puzzle.defines.dart';
 
@@ -16,25 +18,47 @@ final isActive = StateProvider<bool>((ref) => false);
 ///
 class PuzzleImages extends Notifier<List<String>> {
   /// The default state. The images are the bird images.
+
+  List<String> current = [];
+  int get size => ref.watch(gridSize);
+  bool get isNumber => ref.watch(isNumbered);
+
   @override
   List<String> build() {
-    int size = ref.watch(gridSize);
-    return size == 3 ? bird : whale;
+    /// used a spread operator to return the value as a new list
+    /// and the original list are constant
+    ///
+
+    current = [...(size == 3 ? bird : whale)];
+
+    return current;
   }
 
   /// Shuffles the images.
   void shuffle() {
-    state.shuffle();
+    /// [shuffle] reorder the items of the list but not changing its state
+    /// to work around this we need to reassign it to our state as a new value
+
+    current.shuffle(); // new list state
+    state = current; // reassign to state
   }
 
   moveGrid(int index) {
     state[state.indexOf("0")] = state[index];
     state[index] = "0";
+    state = [...state]; // reassign to state
+  }
+
+  reset() {
+    current.clear();
+    current = [...(size == 3 ? bird : whale)];
+
+    state = current;
   }
 
   isMovable(int index) {
     List<String> images = state;
-    int boardSize = ref.read(gridSize);
+    int boardSize = size;
     return index - 1 >= 0 && images[index - 1] == "0" || // left
         index + 1 < state.length && state[index + 1] == "0" || // right
         (index - boardSize >= 0 && state[index - boardSize] == "0" || // top
@@ -64,9 +88,6 @@ class MoveCounter extends Notifier<int> {
 
 final moveCounter = NotifierProvider<MoveCounter, int>(() => MoveCounter());
 
-/// [timeElapsed] is the time elapsed since the game started.
-final timeElapsed = StateProvider<int>((ref) => 0);
-
 /// [gridSize] is the size of the grid. It is a square grid, so it is the
 /// number of rows and columns. If it's 2 then it will be 2 by 2, if it's 3
 /// then it will be 3 by 3, and so on. The default is 4. and the maximum is 9.
@@ -89,3 +110,24 @@ final numberedArray = Provider<List<String>>((ref) {
   numbers.add("0");
   return numbers;
 });
+
+/// [TimeElapsed] is the time elapsed since the game started.
+class TimeElapsed extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+
+  late Timer timer;
+
+  reset() {
+    state = 0;
+    timer.cancel();
+  }
+
+  startTime() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) => state++);
+  }
+}
+
+final countTime = NotifierProvider<TimeElapsed, int>(TimeElapsed.new);
