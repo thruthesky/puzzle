@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:game/puzzle.defines.dart';
 
 /// [isActive] is set to true when the game has started.
 final isActive = StateProvider<bool>((ref) => false);
@@ -19,12 +18,13 @@ final isActive = StateProvider<bool>((ref) => false);
 class PuzzleImages extends Notifier<List<String>> {
   /// The default state. The images are the bird images.
 
-  int get size => ref.watch(gridSize);
+  int get boardSize => ref.watch(dimension);
   bool get isNumber => ref.watch(isNumbered);
 
   @override
   List<String> build() {
-    return List<String>.from(size == 3 ? bird : whale);
+    // return List<String>.from(size == 3 ? bird : whale);
+    return [];
   }
 
   /// Shuffles the images.
@@ -44,13 +44,13 @@ class PuzzleImages extends Notifier<List<String>> {
   }
 
   reset() {
-    state = List<String>.from(size == 3 ? bird : whale);
+    // state = List<String>.from(size == 3 ? bird : whale);
+    state = [];
     // ref.notifyListeners();
   }
 
   isMovable(int index) {
     List<String> images = state;
-    int boardSize = size;
     return index - 1 >= 0 && images[index - 1] == "0" || // left
         index + 1 < state.length && state[index + 1] == "0" || // right
         (index - boardSize >= 0 && state[index - boardSize] == "0" || // top
@@ -80,10 +80,10 @@ class MoveCounter extends Notifier<int> {
 
 final moveCounter = NotifierProvider<MoveCounter, int>(() => MoveCounter());
 
-/// [gridSize] is the size of the grid. It is a square grid, so it is the
+/// [dimension] is the size of the grid. It is a square grid, so it is the
 /// number of rows and columns. If it's 2 then it will be 2 by 2, if it's 3
 /// then it will be 3 by 3, and so on. The default is 4. and the maximum is 9.
-final gridSize = StateProvider<int>((ref) => 4);
+final dimension = StateProvider<int>((ref) => 4);
 
 /// [gridChanged] if the user changes the size of the grid, this will be set to true.
 /// This will trigger the [PuzzleBoard] to rebuild with the new grid size.
@@ -94,7 +94,7 @@ final isNumbered = StateProvider<bool>((ref) => false);
 
 /// [numberedArray] is the list of numbers that will be displayed in the board.
 final numberedArray = Provider<List<String>>((ref) {
-  int size = ref.watch(gridSize);
+  int size = ref.watch(dimension);
   final List<String> numbers = [];
   for (int i = 1; i < size * size; i++) {
     numbers.add(i.toString());

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:game/puzzle.screen.dart';
+import 'package:game/other/puzzle.screen.dart';
 
 void main() {
   runApp(
@@ -43,13 +43,21 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
+            // ElevatedButton(
+            //   onPressed: () => showGeneralDialog(
+            //       context: context,
+            //       pageBuilder: (context, animation, secondaryAnimation) {
+            //         return const PuzzleScreen();
+            //       }),
+            //   child: const Text('Open Puzzle Screen'),
+            // ),
             ElevatedButton(
-                onPressed: () => showGeneralDialog(
-                    context: context,
-                    pageBuilder: (context, animation, secondaryAnimation) {
-                      return const PuzzleScreen();
-                    }),
-                child: const Text('Open Puzzle Screen'))
+              onPressed: () => showGeneralDialog(
+                context: context,
+                pageBuilder: (context, _, __) => const OtherPuzzleScreen(),
+              ),
+              child: const Text('Open Puzzle Screen'),
+            ),
           ],
         ),
       ),
