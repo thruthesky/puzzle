@@ -9,7 +9,7 @@ class PuzzleScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('rebuild');
+    print('CusumerWidget::build() rebuilds');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Puzzle'),
@@ -34,7 +34,7 @@ class PuzzleScreen extends ConsumerWidget {
               },
               child: const Text('Play'),
             ),
-            if (ref.read(isActive)) ...[
+            if (ref.watch(isActive)) ...[
               ElevatedButton(
                 onPressed: () {
                   ref.read(isActive.notifier).state = false;

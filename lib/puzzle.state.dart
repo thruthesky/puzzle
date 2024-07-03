@@ -19,19 +19,12 @@ final isActive = StateProvider<bool>((ref) => false);
 class PuzzleImages extends Notifier<List<String>> {
   /// The default state. The images are the bird images.
 
-  List<String> current = [];
   int get size => ref.watch(gridSize);
   bool get isNumber => ref.watch(isNumbered);
 
   @override
   List<String> build() {
-    /// used a spread operator to return the value as a new list
-    /// and the original list are constant
-    ///
-
-    current = [...(size == 3 ? bird : whale)];
-
-    return current;
+    return List<String>.from(size == 3 ? bird : whale);
   }
 
   /// Shuffles the images.
@@ -39,8 +32,9 @@ class PuzzleImages extends Notifier<List<String>> {
     /// [shuffle] reorder the items of the list but not changing its state
     /// to work around this we need to reassign it to our state as a new value
 
-    current.shuffle(); // new list state
-    state = current; // reassign to state
+    state.shuffle(); // new list state
+    // state = current; // reassign to state
+    ref.notifyListeners();
   }
 
   moveGrid(int index) {
@@ -50,10 +44,8 @@ class PuzzleImages extends Notifier<List<String>> {
   }
 
   reset() {
-    current.clear();
-    current = [...(size == 3 ? bird : whale)];
-
-    state = current;
+    state = List<String>.from(size == 3 ? bird : whale);
+    // ref.notifyListeners();
   }
 
   isMovable(int index) {
