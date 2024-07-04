@@ -1,8 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game/firebase_options.dart';
 import 'package:game/other/puzzle.screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -43,14 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            // ElevatedButton(
-            //   onPressed: () => showGeneralDialog(
-            //       context: context,
-            //       pageBuilder: (context, animation, secondaryAnimation) {
-            //         return const PuzzleScreen();
-            //       }),
-            //   child: const Text('Open Puzzle Screen'),
-            // ),
             ElevatedButton(
               onPressed: () => showGeneralDialog(
                 context: context,

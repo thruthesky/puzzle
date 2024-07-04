@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game/other/puzzle.model.state.dart';
 import 'package:game/other/puzzle.service.dart';
 import 'package:game/other/puzzle_tile.model.dart';
+
+const defaultAsset = 'assets/animals.jpg';
 
 /// [isActive] is set to true when the game has started.
 final isActive = StateProvider<bool>((ref) => false);
@@ -51,12 +54,31 @@ final numberedArray = Provider<List<String>>((ref) {
   return numbers;
 });
 
+final selectedUrlIndex = StateProvider<int?>((ref) => null);
+
 final puzzleImagesProvider =
     NotifierProvider<Puzzle, List<PuzzleTile>>(() => Puzzle());
 
+final imageToSplit = StateProvider<String>((ref) => defaultAsset);
+
 final imageSplitter = FutureProvider(
   (ref) async => await PuzzleService.instance.splitImage(
-    'assets/animals.jpg',
+    ref.watch(imageToSplit),
     ref.watch(gridSize),
   ),
 );
+
+/// List of uploaded urls can be use to change images
+// final urls = StateProvider<List<String>>((ref) => []);
+
+final urls = FutureProvider<List<String>>((ref) async {
+  List<String> urls = [];
+  Reference storageRef = FirebaseStorage.instance.ref().child('images');
+  ListResult result = await storageRef.listAll();
+
+  for (Reference ref in result.items) {
+    String downloadUrl = await ref.getDownloadURL();
+    urls.add(downloadUrl);
+  }
+  return urls;
+});

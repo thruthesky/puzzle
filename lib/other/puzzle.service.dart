@@ -1,8 +1,8 @@
 import 'dart:ui';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:game/other/puzzle_position.dart';
 import 'package:game/other/puzzle_tile.model.dart';
 import 'package:image/image.dart' as imglib;
 
@@ -31,8 +31,6 @@ class PuzzleService {
               imglib.encodeJpg(croppedImage),
               fit: BoxFit.fill,
             ),
-            correctPosition: Position(x: i + 1, y: j + 1),
-            currentPosition: Position(x: i + 1, y: j + 1),
             whiteSpace: i == gridSize - 1 && j == gridSize - 1,
           ),
         );
@@ -44,17 +42,25 @@ class PuzzleService {
     return pieces;
   }
 
-  /* From documentation: 
-   * https://github.com/brendan-duncan/image/blob/main/doc/flutter.md#convert-a-flutter-asset-to-the-dart-image-library
-   */
+  isAsset(String path) {
+    final splits = path.split('/');
+
+    if (splits.first == 'assets') {
+      return true;
+    }
+    return false;
+  }
+
   Future<imglib.Image?> decodeAsset(String path) async {
-    final data = await rootBundle.load(path);
+    Uint8List? data;
+    if (isAsset(path)) {
+      final byteData = await rootBundle.load(path);
+      data = byteData.buffer.asUint8List();
+    } else {
+      data = await FirebaseStorage.instance.refFromURL(path).getData();
+    }
 
-    // Utilize flutter's built-in decoder to decode asset images as it will be
-    // faster than the dart decoder.
-    final buffer =
-        await ImmutableBuffer.fromUint8List(data.buffer.asUint8List());
-
+    ImmutableBuffer? buffer = await ImmutableBuffer.fromUint8List(data!);
     final id = await ImageDescriptor.encoded(buffer);
     final codec = await id.instantiateCodec(
         targetHeight: id.height, targetWidth: id.width);
