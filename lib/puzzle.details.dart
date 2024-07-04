@@ -14,7 +14,6 @@ class PuzzleMenuBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text("Move: ${ref.watch(moveCounter)}"),
-            Text("Time: ${ref.watch(countTime)}"),
           ],
         ),
       ),

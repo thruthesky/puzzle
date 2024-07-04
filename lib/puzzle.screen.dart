@@ -4,9 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:game/other/puzzle.board.dart';
-import 'package:game/other/puzzle.state.dart';
+import 'package:game/puzzle.board.dart';
+import 'package:game/puzzle.state.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:just_audio/just_audio.dart';
 
 class OtherPuzzleScreen extends StatelessWidget {
   const OtherPuzzleScreen({super.key});
@@ -54,6 +55,7 @@ class OtherPuzzleScreen extends StatelessWidget {
               ),
               _btn('Play', () {
                 ref.read(puzzleImagesProvider.notifier).shuffle();
+                playAudio();
               }),
               _btn('Upload Image', () async => await uploadPic(ref)),
             ],
@@ -132,5 +134,12 @@ class OtherPuzzleScreen extends StatelessWidget {
     final location = await refPath.getDownloadURL();
 
     ref.read(urls.future).then((state) => state.add(location));
+  }
+
+  playAudio() async {
+    final player = AudioPlayer();
+    await player.setAsset('assets/sound/play.start.mp3');
+
+    await player.play();
   }
 }

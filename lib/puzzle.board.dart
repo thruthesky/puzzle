@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:game/other/puzzle.piece.dart';
-import 'package:game/other/puzzle_tile.model.dart';
-import 'package:game/other/puzzle.state.dart';
+import 'package:game/puzzle.piece.dart';
+import 'package:game/puzzle_tile.model.dart';
+import 'package:game/puzzle.state.dart';
 
 class PuzzleBoard extends StatelessWidget {
   const PuzzleBoard({
@@ -28,6 +28,7 @@ class PuzzleBoard extends StatelessWidget {
       itemCount: puzzleTiles.length,
       itemBuilder: (context, index) => Consumer(
         builder: (context, ref, child) => PuzzlePiece(
+          key: ValueKey(puzzleTiles[index].value.toString()),
           numbered: numbered, // state.isNumber,
           content: puzzleTiles[index].image,
           space: puzzleTiles[index].whiteSpace,
@@ -51,29 +52,4 @@ class PuzzleBoard extends StatelessWidget {
       ref.read(moveCounter.notifier).increment();
     }
   }
-
-  // checkWin(BuildContext context, WidgetRef ref) {
-  //   if (isSorted(ref)) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //         content: Text('Congrats! You Won!'),
-  //       ),
-  //     );
-  //   }
-  // }
-
-  // isSorted(WidgetRef ref) {
-  //   bool result = true;
-  //   int index = 1;
-
-  //   for (String item in ref.watch(puzzleImagesProvider)) {
-  //     if (!item.startsWith("0") && index == 16) result = false;
-  //     if (!item.startsWith("0") &&
-  //         index != int.parse(item.split("/").last.substring(5, 8))) {
-  //       result = false;
-  //     }
-  //     index++;
-  //   }
-  //   return result;
-  // }
 }

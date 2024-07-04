@@ -3,7 +3,8 @@ import 'dart:ui';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:game/other/puzzle_tile.model.dart';
+import 'package:game/puzzle_position.dart';
+import 'package:game/puzzle_tile.model.dart';
 import 'package:image/image.dart' as imglib;
 
 class PuzzleService {
@@ -16,24 +17,26 @@ class PuzzleService {
     imglib.Image? image = await decodeAsset(path);
 
     List<PuzzleTile> pieces = [];
-    int x = 0, y = 0;
+    int x = 0, y = 0, counter = 0;
     int width = (image!.width / gridSize).floor();
     int height = (image.height / gridSize).floor();
     for (int i = 0; i < gridSize; i++) {
       for (int j = 0; j < gridSize; j++) {
         imglib.Image croppedImage =
             imglib.copyCrop(image, x: x, y: y, width: width, height: height);
-
         pieces.add(
           PuzzleTile(
-            value: pieces.length + 1,
+            value: counter,
             image: Image.memory(
               imglib.encodeJpg(croppedImage),
               fit: BoxFit.fill,
             ),
+            correctPosition: Position(x: i, y: j),
+            currentPosition: Position(x: i, y: j),
             whiteSpace: i == gridSize - 1 && j == gridSize - 1,
           ),
         );
+        counter++;
         x += width;
       }
       x = 0;
